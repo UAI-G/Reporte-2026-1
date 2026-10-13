@@ -1,0 +1,3278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reporte 2026 · Acompañamiento Estudiantil UAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --ink:#0f172a;
+    --ink-soft:#1e293b;
+    --text:#334155;
+    --text-dim:#64748b;
+    --text-mute:#94a3b8;
+    --border:#e2e8f0;
+    --border-soft:#eef1f5;
+    /* Teal UAI palette (from test diagnóstico) */
+    --teal:#14909c;
+    --teal-light:#4cbcc7;
+    --teal-dark:#0e6b75;
+    --teal-darker:#0a3b44;
+    --teal-bg:#e8f4f5;
+    /* Semantic */
+    --green:#16a34a;
+    --green-bg:#dcfce7;
+    --amber:#ea580c;
+    --amber-bg:#fff1e0;
+    --red:#dc2626;
+    --red-bg:#fee2e2;
+    --violet:#7c3aed;
+    --violet-bg:#ede9fe;
+    --slate:#475569;
+    --slate-bg:#f1f5f9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    font-weight:400;font-size:14px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* ================= TOPBAR ================= */
+  .topbar{
+    background:#0b0f14;
+    padding:14px 40px;
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:50;
+  }
+  .brand{display:flex;align-items:center;gap:18px;}
+  .brand-logo{
+    background:var(--teal);
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:0.02em;
+    padding:8px 14px;
+    border-radius:4px;
+  }
+  .brand-name{
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+  }
+  .top-right{
+    color:#94a3b8;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    font-weight:500;
+  }
+
+  /* ================= HERO ================= */
+  .hero{
+    background:linear-gradient(135deg,#0a3b44 0%,#14909c 65%,#4cbcc7 100%);
+    padding:72px 40px 60px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;
+    top:-120px;right:-120px;
+    width:400px;height:400px;
+    background:radial-gradient(circle,rgba(255,255,255,0.12) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .hero-inner{max-width:1400px;margin:0 auto;position:relative;}
+  .hero h1{
+    font-family:'Playfair Display',serif;
+    font-weight:500;
+    font-size:clamp(42px,5vw,60px);
+    line-height:1.05;
+    letter-spacing:-0.015em;
+    margin-bottom:14px;
+    color:#fff;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:#7dd8e0;
+    font-weight:500;
+  }
+  .hero-sub{
+    font-size:16px;
+    color:#b8e0e4;
+    max-width:640px;
+    font-weight:400;
+    line-height:1.55;
+  }
+  .hero-stats{
+    display:flex;gap:56px;margin-top:40px;flex-wrap:wrap;
+  }
+  .hs-item{}
+  .hs-value{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:46px;
+    line-height:1;
+    color:#fff;
+    letter-spacing:-0.02em;
+  }
+  .hs-label{
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:#b8e0e4;
+    margin-top:10px;
+    font-weight:600;
+  }
+
+  /* ================= TABS ================= */
+  .tabs-wrap{
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:52px;z-index:40;
+  }
+  .tabs{
+    max-width:1400px;margin:0 auto;
+    padding:0 40px;
+    display:flex;gap:0;
+    overflow-x:auto;
+  }
+  .tab{
+    background:transparent;border:none;
+    padding:22px 28px;
+    color:var(--text-dim);
+    font-family:'Inter',sans-serif;
+    font-weight:500;
+    font-size:14px;
+    cursor:pointer;
+    transition:color 0.2s;
+    position:relative;
+    white-space:nowrap;
+  }
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--teal);font-weight:600;}
+  .tab.active::after{
+    content:"";position:absolute;left:28px;right:28px;bottom:-1px;
+    height:2px;background:var(--teal);
+  }
+
+  /* ================= MAIN ================= */
+  main{
+    max-width:1400px;margin:0 auto;
+    padding:48px 40px 72px;
+  }
+  .view{display:none;}
+  .view.active{display:block;animation:fadeIn 0.4s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ================= SECTION ================= */
+  .section{margin-bottom:56px;}
+  .section-label{
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--teal);
+    font-weight:700;
+    margin-bottom:12px;
+  }
+  .section-title{
+    font-family:'Playfair Display',serif;
+    font-weight:500;
+    font-size:34px;
+    line-height:1.1;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+    margin-bottom:8px;
+  }
+  .section-title em{font-style:italic;color:var(--teal);font-weight:500;}
+  .section-desc{
+    font-size:14px;
+    color:var(--text-dim);
+    max-width:600px;
+    margin-bottom:32px;
+  }
+
+  /* ================= KPI CARDS ================= */
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:28px;
+  }
+  .kpi{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:22px 24px;
+    transition:all 0.2s ease;
+    position:relative;
+  }
+  .kpi:hover{
+    border-color:var(--teal-light);
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px -12px rgba(20,144,156,0.18);
+  }
+  .kpi-icon{
+    width:36px;height:36px;
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+    font-size:18px;font-weight:700;
+  }
+  .kpi-icon.teal{background:var(--teal-bg);color:var(--teal);}
+  .kpi-icon.tealD{background:#bae6fd;color:#0e7490;}
+  .kpi-icon.green{background:var(--green-bg);color:var(--green);}
+  .kpi-icon.amber{background:var(--amber-bg);color:var(--amber);}
+  .kpi-icon.red{background:var(--red-bg);color:var(--red);}
+  .kpi-icon.violet{background:var(--violet-bg);color:var(--violet);}
+  .kpi-icon.slate{background:var(--slate-bg);color:var(--slate);}
+  .kpi-label{
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:10px;
+    font-weight:600;
+    min-height:14px;
+    line-height:1.4;
+  }
+  .kpi-value{
+    font-family:'Playfair Display',serif;
+    font-weight:600;
+    font-size:42px;
+    line-height:1;
+    color:var(--ink);
+    letter-spacing:-0.02em;
+  }
+  .kpi-value .unit{
+    font-size:22px;
+    color:var(--text-dim);
+    font-weight:500;
+    margin-left:2px;
+  }
+  .kpi-foot{
+    font-size:12px;
+    color:var(--text-mute);
+    margin-top:8px;
+  }
+  .kpi-foot strong{color:var(--text);font-weight:600;}
+
+  /* ================= CARDS ================= */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:24px;}
+  @media(max-width:980px){
+    .grid-2,.grid-3{grid-template-columns:1fr;}
+    .hero-stats{gap:28px;}
+    .hs-value{font-size:36px;}
+    .topbar{padding:12px 20px;}
+    .hero{padding:48px 20px 40px;}
+    .tabs{padding:0 20px;}
+    main{padding:32px 20px 60px;}
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:28px;
+  }
+  .card-head{
+    margin-bottom:24px;padding-bottom:20px;
+    border-bottom:1px solid var(--border-soft);
+    display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  }
+  .card-title{
+    font-family:'Playfair Display',serif;
+    font-weight:500;
+    font-size:22px;
+    color:var(--ink);
+    line-height:1.2;
+    letter-spacing:-0.005em;
+  }
+  .card-sub{
+    font-size:13px;
+    color:var(--text-dim);
+    margin-top:4px;
+  }
+  .card-badge{
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    padding:5px 12px;
+    background:var(--teal-bg);
+    color:var(--teal-dark);
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    font-weight:600;
+    border-radius:4px;
+    flex-shrink:0;
+  }
+  .card-badge.slate{background:var(--slate-bg);color:var(--slate);}
+  .chart-wrap{position:relative;height:280px;}
+  .chart-wrap.tall{height:340px;}
+
+  /* Note inside cards */
+  .card-note{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:12px 14px;
+    background:var(--teal-bg);
+    border-left:3px solid var(--teal);
+    border-radius:6px;
+    margin-bottom:20px;
+    font-size:13px;
+    color:var(--teal-dark);
+    line-height:1.5;
+  }
+  .card-note .icon{
+    flex-shrink:0;
+    font-weight:700;
+    font-size:14px;
+    color:var(--teal);
+    line-height:1.3;
+  }
+  .card-note strong{font-weight:600;}
+
+  /* ================= BREAKDOWN ================= */
+  .breakdown{display:flex;flex-direction:column;gap:18px;}
+  .bd-item{}
+  .bd-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;margin-bottom:8px;}
+  .bd-label{
+    font-size:14px;
+    color:var(--text);
+    font-weight:500;
+  }
+  .bd-num{
+    font-family:'Playfair Display',serif;
+    font-weight:600;
+    font-size:20px;
+    color:var(--ink);
+  }
+  .bd-num .pct{
+    color:var(--text-mute);
+    font-weight:400;
+    font-size:13px;
+    margin-left:6px;
+    font-family:'Inter',sans-serif;
+  }
+  .bd-track{
+    height:6px;background:var(--slate-bg);overflow:hidden;position:relative;
+    border-radius:3px;
+  }
+  .bd-fill{
+    height:100%;
+    border-radius:3px;
+    transform-origin:left;
+    animation:growBar 0.9s cubic-bezier(.22,.61,.36,1) forwards;
+  }
+  @keyframes growBar{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+  /* ================= MONTH COMPARE ================= */
+  .month-compare{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-bottom:40px;
+  }
+  .mc-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .mc-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--teal);
+  }
+  .mc-card.muted::before{background:var(--slate-bg);}
+  .mc-month{
+    font-family:'Inter',sans-serif;
+    font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--text-dim);font-weight:600;margin-bottom:14px;
+  }
+  .mc-value{
+    font-family:'Playfair Display',serif;
+    font-weight:600;font-size:56px;line-height:1;
+    color:var(--ink);letter-spacing:-0.025em;
+  }
+  .mc-delta{
+    font-size:12px;
+    margin-top:12px;
+    font-weight:500;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 10px;
+    border-radius:20px;
+    font-family:'Inter',sans-serif;
+  }
+  .mc-delta.up{background:var(--green-bg);color:var(--green);}
+  .mc-delta.down{background:var(--red-bg);color:var(--red);}
+  .mc-delta.neutral{background:var(--slate-bg);color:var(--slate);}
+  @media(max-width:780px){
+    .month-compare{grid-template-columns:1fr;}
+  }
+
+  /* ================= HIGHLIGHT BOX ================= */
+  .highlight{
+    background:linear-gradient(135deg,#f0fafb 0%,#e8f4f5 100%);
+    border:1px solid var(--teal-light);
+    border-radius:10px;
+    padding:24px 28px;
+    margin-bottom:32px;
+    display:flex;gap:20px;align-items:center;
+  }
+  .highlight-icon{
+    width:48px;height:48px;
+    background:var(--teal);color:#fff;
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;flex-shrink:0;
+  }
+  .highlight-text{
+    font-family:'Playfair Display',serif;
+    font-size:18px;font-weight:500;
+    color:var(--ink);
+    line-height:1.4;
+    font-style:italic;
+  }
+  .highlight-text strong{font-style:normal;color:var(--teal-dark);font-weight:600;}
+
+  /* ================= FOOTER ================= */
+  footer{
+    background:#0b0f14;color:#cbd5e1;
+    padding:48px 40px;
+    margin-top:48px;
+  }
+  .footer-inner{
+    max-width:1400px;margin:0 auto;
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+  }
+  .footer-brand{
+    font-family:'Playfair Display',serif;
+    font-weight:500;font-size:24px;font-style:italic;
+    color:#fff;margin-bottom:12px;
+  }
+  .footer-desc{font-size:13px;color:#94a3b8;line-height:1.7;max-width:320px;}
+  .footer-col h4{
+    font-family:'Inter',sans-serif;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--teal-light);margin-bottom:14px;font-weight:700;
+  }
+  .footer-col p{font-size:13px;color:#94a3b8;line-height:1.8;}
+  .footer-bottom{
+    max-width:1400px;margin:32px auto 0;padding-top:24px;
+    border-top:1px solid #1e293b;
+    font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+    color:#64748b;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;
+    font-weight:500;
+  }
+  @media(max-width:780px){
+    .footer-inner{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-logo">UAI</span>
+    <span class="brand-name">Universidad Adolfo Ibáñez</span>
+  </div>
+  <div class="top-right">Reporte 2026</div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Acompañamiento <em>Estudiantil</em> <br>Reporte 2026</h1>
+    <p class="hero-sub">
+      Resultados consolidados — Rutas Formativas (RF) y Apoyo Académico (AA).
+      Seguimiento mensual de atenciones durante el año 2026.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hs-item">
+        <div class="hs-value" id="grandTotal">0</div>
+        <div class="hs-label">Atenciones totales</div>
+      </div>
+      <div class="hs-item">
+        <div class="hs-value">9</div>
+        <div class="hs-label">Meses reportados</div>
+      </div>
+      <div class="hs-item">
+        <div class="hs-value">7</div>
+        <div class="hs-label">Áreas de servicio</div>
+      </div>
+      <div class="hs-item">
+        <div class="hs-value">2</div>
+        <div class="hs-label">Sedes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab" data-month="all">Panorama General</button>
+    <button class="tab" data-month="enero">Enero</button>
+    <button class="tab" data-month="febrero">Febrero</button>
+    <button class="tab" data-month="marzo">Marzo</button>
+    <button class="tab" data-month="abril">Abril</button>
+    <button class="tab" data-month="mayo">Mayo</button>
+    <button class="tab" data-month="junio">Junio</button>
+    <button class="tab" data-month="julio">Julio</button>
+    <button class="tab" data-month="agosto">Agosto</button>
+    <button class="tab active" data-month="septiembre">Septiembre</button>
+  </div>
+</nav>
+
+<main>
+  <!-- =========== CONSOLIDADO =========== -->
+  <section class="view" id="view-all">
+    <div class="section">
+      <div class="section-label">Vista general</div>
+      <h2 class="section-title">Evolución del <em>año</em></h2>
+      <p class="section-desc">Comparativo mensual de atenciones realizadas durante el año 2026.</p>
+
+      <div class="highlight">
+        <div class="highlight-icon">↑</div>
+        <div class="highlight-text">
+          <strong>Abril</strong> se mantiene como el peak del año con <strong>1.366 atenciones</strong>, seguido muy de cerca por
+          <strong>septiembre</strong> con <strong>843 atenciones</strong> (↑173,7% vs. agosto). El segundo semestre
+          se consolida con las <strong>tutorías</strong> alcanzando 628 estudiantes en septiembre y el nuevo
+          <strong>Taller de Autorregulación Académica</strong> convocando a 46 participantes. El total acumulado anual
+          alcanza <strong>5.043 atenciones</strong>.
+        </div>
+      </div>
+
+      <div class="month-compare">
+        <div class="mc-card muted">
+          <div class="mc-month">Enero</div>
+          <div class="mc-value">68</div>
+          <div class="mc-delta neutral">Mes base</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Febrero</div>
+          <div class="mc-value">22</div>
+          <div class="mc-delta down">↓ 67,6% vs. enero</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Marzo</div>
+          <div class="mc-value">694</div>
+          <div class="mc-delta up">↑ 3.054% vs. febrero</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Abril</div>
+          <div class="mc-value">1.366</div>
+          <div class="mc-delta up">↑ 96,8% vs. marzo</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Mayo</div>
+          <div class="mc-value">808</div>
+          <div class="mc-delta down">↓ 40,8% vs. abril</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Junio</div>
+          <div class="mc-value">843</div>
+          <div class="mc-delta up">↑ 4,3% vs. mayo</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Julio</div>
+          <div class="mc-value">91</div>
+          <div class="mc-delta down">↓ 89,2% vs. junio</div>
+        </div>
+        <div class="mc-card muted">
+          <div class="mc-month">Agosto</div>
+          <div class="mc-value">308</div>
+          <div class="mc-delta up">↑ 238% vs. julio</div>
+        </div>
+        <div class="mc-card">
+          <div class="mc-month">Septiembre</div>
+          <div class="mc-value">843</div>
+          <div class="mc-delta up">↑ 173,7% vs. agosto</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Evolución mensual por área</div>
+              <div class="card-sub">Atenciones registradas durante el año</div>
+            </div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-evol"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Distribución acumulada</div>
+              <div class="card-sub">Participación por área en el total del año</div>
+            </div>
+            <span class="card-badge">5.043 atenciones</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-acum"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== ENERO =========== -->
+  <section class="view" id="view-enero">
+    <div class="section">
+      <div class="section-label">Mes 01 · 2026</div>
+      <h2 class="section-title">Resultados de <em>enero</em></h2>
+      <p class="section-desc">68 atenciones registradas — concentradas en las áreas de Rutas Formativas.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">43</div>
+          <div class="kpi-foot"><strong>63,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">25</div>
+          <div class="kpi-foot"><strong>36,8%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin registros</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">○</div>
+          <div class="kpi-label">AA · Total</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin registros</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">43 asesorías realizadas</div></div>
+            <span class="card-badge">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-enero-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">25 retiros registrados</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-enero-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución por sede</div><div class="card-sub">Asesorías de enero</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-ene-sede"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución por género</div><div class="card-sub">Asesorías de enero</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-ene-gen"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== FEBRERO =========== -->
+  <section class="view" id="view-febrero">
+    <div class="section">
+      <div class="section-label">Mes 02 · 2026</div>
+      <h2 class="section-title">Resultados de <em>febrero</em></h2>
+      <p class="section-desc">22 atenciones — período de baja actividad previo al inicio del año académico.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">4</div>
+          <div class="kpi-foot"><strong>18,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">18</div>
+          <div class="kpi-foot"><strong>81,8%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin registros</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">○</div>
+          <div class="kpi-label">AA · Total</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin registros</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">4 asesorías realizadas</div></div>
+            <span class="card-badge">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-feb-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">18 retiros registrados</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-feb-ret"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== MARZO =========== -->
+  <section class="view" id="view-marzo">
+    <div class="section">
+      <div class="section-label">Mes 03 · 2026</div>
+      <h2 class="section-title">Resultados de <em>marzo</em></h2>
+      <p class="section-desc">694 atenciones — mes de activación con todas las áreas de Apoyo Académico en marcha.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">26</div>
+          <div class="kpi-foot"><strong>3,7%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">18</div>
+          <div class="kpi-foot"><strong>2,6%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">64</div>
+          <div class="kpi-foot"><strong>9,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">215</div>
+          <div class="kpi-foot"><strong>31,0%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">24</div>
+          <div class="kpi-foot"><strong>3,5%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">214</div>
+          <div class="kpi-foot"><strong>30,8%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">133</div>
+          <div class="kpi-foot"><strong>19,2%</strong> del total mensual</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de marzo</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-mar-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">215 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-mar-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">26 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-mar-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">18 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-mar-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por motivo</div><div class="card-sub">64 alertas registradas</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-mar-ale"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Coaching por tema</div><div class="card-sub">24 sesiones</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-mar-coa"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Workshops por tema</div><div class="card-sub">214 participantes</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-mar-ws"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-mar-uni"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones de Estudio de Matemática</div><div class="card-sub">133 asistencias en marzo · 2 semanas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>total de asistencias acumuladas</strong> en las sesiones semanales de estudio de Matemática, separadas por sede.</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-mar-mate"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones Matemática — detalle</div><div class="card-sub">Participación semanal</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+            <div class="kpi" style="border-color:var(--teal-bg);">
+              <div class="kpi-label">Santiago</div>
+              <div class="kpi-value" style="color:var(--teal);">44</div>
+              <div class="kpi-foot"><strong>33,1%</strong> del mes</div>
+            </div>
+            <div class="kpi" style="border-color:var(--violet-bg);">
+              <div class="kpi-label">Viña del Mar</div>
+              <div class="kpi-value" style="color:var(--violet);">89</div>
+              <div class="kpi-foot"><strong>66,9%</strong> del mes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== ABRIL =========== -->
+  <section class="view" id="view-abril">
+    <div class="section">
+      <div class="section-label">Mes 04 · 2026</div>
+      <h2 class="section-title">Resultados de <em>abril</em></h2>
+      <p class="section-desc">1.366 atenciones — mes peak del año, con consolidación del Apoyo Académico y crecimiento sostenido de las alertas tempranas.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">22</div>
+          <div class="kpi-foot"><strong>1,6%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">16</div>
+          <div class="kpi-foot"><strong>1,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">126</div>
+          <div class="kpi-foot"><strong>9,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">877</div>
+          <div class="kpi-foot"><strong>64,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">30</div>
+          <div class="kpi-foot"><strong>2,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">15</div>
+          <div class="kpi-foot"><strong>1,1%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">280</div>
+          <div class="kpi-foot"><strong>20,5%</strong> del total mensual</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de abril</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-abr-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">877 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-abr-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">22 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-abr-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">16 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-abr-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por motivo</div><div class="card-sub">126 alertas registradas</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-abr-ale"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Coaching por tema</div><div class="card-sub">30 sesiones</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-abr-coa"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Workshops por tema</div><div class="card-sub">15 participantes</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-abr-ws"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-abr-uni"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por sede</div><div class="card-sub">Distribución territorial</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-abr-ale-sede"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por sede</div><div class="card-sub">22 asesorías de abril</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-abr-ases-sede"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones de Estudio de Matemática</div><div class="card-sub">280 asistencias en abril · 4 semanas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>total de asistencias acumuladas</strong> en las sesiones semanales de estudio de Matemática, separadas por sede.</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-abr-mate"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones Matemática — detalle</div><div class="card-sub">Participación mensual</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+            <div class="kpi" style="border-color:var(--teal-bg);">
+              <div class="kpi-label">Santiago</div>
+              <div class="kpi-value" style="color:var(--teal);">94</div>
+              <div class="kpi-foot"><strong>33,6%</strong> del mes</div>
+            </div>
+            <div class="kpi" style="border-color:var(--violet-bg);">
+              <div class="kpi-label">Viña del Mar</div>
+              <div class="kpi-value" style="color:var(--violet);">186</div>
+              <div class="kpi-foot"><strong>66,4%</strong> del mes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== MAYO =========== -->
+  <section class="view" id="view-mayo">
+    <div class="section">
+      <div class="section-label">Mes 05 · 2026</div>
+      <h2 class="section-title">Resultados de <em>mayo</em></h2>
+      <p class="section-desc">808 atenciones — actividad moderada tras el peak de abril, con tutorías y Sesiones de Matemática como pilares y un fuerte repunte de los workshops.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">56</div>
+          <div class="kpi-foot"><strong>6,9%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">6</div>
+          <div class="kpi-foot"><strong>0,7%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">70</div>
+          <div class="kpi-foot"><strong>8,7%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">395</div>
+          <div class="kpi-foot"><strong>48,9%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">26</div>
+          <div class="kpi-foot"><strong>3,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">73</div>
+          <div class="kpi-foot"><strong>9,0%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">182</div>
+          <div class="kpi-foot"><strong>22,5%</strong> del total mensual</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de mayo</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-may-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">395 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-may-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">56 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-may-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">6 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-may-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por motivo</div><div class="card-sub">70 alertas registradas</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-may-ale"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Coaching por tema</div><div class="card-sub">26 sesiones</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-may-coa"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Workshops por tema</div><div class="card-sub">73 participantes</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-may-ws"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-may-uni"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por sede</div><div class="card-sub">Distribución territorial</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-may-ale-sede"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por sede</div><div class="card-sub">56 asesorías de mayo</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-may-ases-sede"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones de Estudio de Matemática</div><div class="card-sub">182 asistencias en mayo</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>total de asistencias acumuladas</strong> en las sesiones semanales de estudio de Matemática, separadas por sede.</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-may-mate"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones Matemática — detalle</div><div class="card-sub">Participación mensual</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+            <div class="kpi" style="border-color:var(--teal-bg);">
+              <div class="kpi-label">Santiago</div>
+              <div class="kpi-value" style="color:var(--teal);">55</div>
+              <div class="kpi-foot"><strong>30,2%</strong> del mes</div>
+            </div>
+            <div class="kpi" style="border-color:var(--violet-bg);">
+              <div class="kpi-label">Viña del Mar</div>
+              <div class="kpi-value" style="color:var(--violet);">127</div>
+              <div class="kpi-foot"><strong>69,8%</strong> del mes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== JUNIO =========== -->
+  <section class="view" id="view-junio">
+    <div class="section">
+      <div class="section-label">Mes 06 · 2026</div>
+      <h2 class="section-title">Resultados de <em>junio</em></h2>
+      <p class="section-desc">843 atenciones — cierre del primer semestre con las tutorías y las Sesiones de Matemática como protagonistas, y un fuerte crecimiento de las asesorías de fin de período.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">74</div>
+          <div class="kpi-foot"><strong>8,8%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">11</div>
+          <div class="kpi-foot"><strong>1,3%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">45</div>
+          <div class="kpi-foot"><strong>5,3%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">449</div>
+          <div class="kpi-foot"><strong>53,3%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">22</div>
+          <div class="kpi-foot"><strong>2,6%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">5</div>
+          <div class="kpi-foot"><strong>0,6%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">237</div>
+          <div class="kpi-foot"><strong>28,1%</strong> del total mensual</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de junio</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-jun-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">449 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-jun-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">74 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-jun-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">11 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-jun-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por motivo</div><div class="card-sub">45 alertas registradas</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-jun-ale"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Coaching por tema</div><div class="card-sub">22 sesiones</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-jun-coa"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Workshops por tema</div><div class="card-sub">5 participantes</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-jun-ws"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-jun-uni"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por sede</div><div class="card-sub">Distribución territorial</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-jun-ale-sede"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por sede</div><div class="card-sub">74 asesorías de junio</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-jun-ases-sede"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones de Estudio de Matemática</div><div class="card-sub">237 asistencias en junio</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>total de asistencias acumuladas</strong> en las sesiones semanales de estudio de Matemática, separadas por sede.</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-jun-mate"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones Matemática — detalle</div><div class="card-sub">Participación mensual</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+            <div class="kpi" style="border-color:var(--teal-bg);">
+              <div class="kpi-label">Santiago</div>
+              <div class="kpi-value" style="color:var(--teal);">68</div>
+              <div class="kpi-foot"><strong>28,7%</strong> del mes</div>
+            </div>
+            <div class="kpi" style="border-color:var(--violet-bg);">
+              <div class="kpi-label">Viña del Mar</div>
+              <div class="kpi-value" style="color:var(--violet);">169</div>
+              <div class="kpi-foot"><strong>71,3%</strong> del mes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== JULIO =========== -->
+  <section class="view" id="view-julio">
+    <div class="section">
+      <div class="section-label">Mes 07 · 2026</div>
+      <h2 class="section-title">Resultados de <em>julio</em></h2>
+      <p class="section-desc">91 atenciones — cierre del primer semestre con actividad concentrada en asesorías y retiros de fin de período. Las áreas de Apoyo Académico se encuentran en receso durante vacaciones de invierno.</p>
+
+      <div class="highlight" style="background:linear-gradient(135deg,#f0fdfa 0%,#ecfeff 100%); border-color:#a5f3fc;">
+        <div class="highlight-icon">i</div>
+        <div class="highlight-text">
+          <strong>Nota metodológica:</strong> Durante julio las áreas de <strong>Alertas, Coaching, Workshops y Sesiones de Estudio de Matemática</strong> no registran actividad debido al cierre del primer semestre y receso académico. La actividad de <strong>Rutas Formativas</strong> se mantiene por asesorías y trámites de retiro de fin de período, y las <strong>tutorías</strong> concluyen con evaluaciones finales.
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">48</div>
+          <div class="kpi-foot"><strong>52,7%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-foot"><strong>15,4%</strong> del total mensual</div>
+        </div>
+        <div class="kpi" style="opacity:0.55;">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin actividad este mes</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">29</div>
+          <div class="kpi-foot"><strong>31,9%</strong> del total mensual</div>
+        </div>
+        <div class="kpi" style="opacity:0.55;">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin actividad este mes</div>
+        </div>
+        <div class="kpi" style="opacity:0.55;">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin actividad este mes</div>
+        </div>
+        <div class="kpi" style="opacity:0.55;">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">0</div>
+          <div class="kpi-foot">Sin actividad este mes</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de julio</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-jul-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">29 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-jul-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">48 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-jul-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">14 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-jul-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-jul-uni"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por sede</div><div class="card-sub">48 asesorías de julio</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-jul-ases-sede"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== AGOSTO =========== -->
+  <section class="view" id="view-agosto">
+    <div class="section">
+      <div class="section-label">Mes 08 · 2026</div>
+      <h2 class="section-title">Resultados de <em>agosto</em></h2>
+      <p class="section-desc">308 atenciones — reactivación del acompañamiento con el inicio del segundo semestre. Tutorías lidera la actividad y se estrena el taller "Otra Oportunidad, Otro Resultado".</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">21</div>
+          <div class="kpi-foot"><strong>6,8%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">4</div>
+          <div class="kpi-foot"><strong>1,3%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">48</div>
+          <div class="kpi-foot"><strong>15,6%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">155</div>
+          <div class="kpi-foot"><strong>50,3%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">19</div>
+          <div class="kpi-foot"><strong>6,2%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">40</div>
+          <div class="kpi-foot"><strong>13,0%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">21</div>
+          <div class="kpi-foot"><strong>6,8%</strong> del total mensual</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de agosto</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-ago-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">155 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-ago-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">21 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-ago-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">4 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-ago-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por motivo</div><div class="card-sub">48 alertas registradas</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-ago-ale"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Coaching por tema</div><div class="card-sub">19 sesiones</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-ago-coa"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Workshops por tema</div><div class="card-sub">40 participantes</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-ago-ws"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-ago-uni"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por sede</div><div class="card-sub">Distribución territorial</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-ago-ale-sede"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por sede</div><div class="card-sub">21 asesorías de agosto</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-ago-ases-sede"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones de Estudio de Matemática</div><div class="card-sub">21 asistencias en agosto</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>total de asistencias acumuladas</strong> en las sesiones semanales de estudio de Matemática, separadas por sede.</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-ago-mate"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones Matemática — detalle</div><div class="card-sub">Participación mensual</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+            <div class="kpi" style="border-color:var(--teal-bg);">
+              <div class="kpi-label">Santiago</div>
+              <div class="kpi-value" style="color:var(--teal);">7</div>
+              <div class="kpi-foot"><strong>33,3%</strong> del mes</div>
+            </div>
+            <div class="kpi" style="border-color:var(--violet-bg);">
+              <div class="kpi-label">Viña del Mar</div>
+              <div class="kpi-value" style="color:var(--violet);">14</div>
+              <div class="kpi-foot"><strong>66,7%</strong> del mes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== SEPTIEMBRE =========== -->
+  <section class="view active" id="view-septiembre">
+    <div class="section">
+      <div class="section-label">Mes 09 · 2026</div>
+      <h2 class="section-title">Resultados de <em>septiembre</em></h2>
+      <p class="section-desc">843 atenciones — consolidación del segundo semestre con las tutorías alcanzando un nuevo peak y el estreno del Taller de Autorregulación Académica.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-icon teal">✦</div>
+          <div class="kpi-label">Rutas Formativas · Asesorías</div>
+          <div class="kpi-value">11</div>
+          <div class="kpi-foot"><strong>1,3%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon violet">✕</div>
+          <div class="kpi-label">Rutas Formativas · Retiros</div>
+          <div class="kpi-value">12</div>
+          <div class="kpi-foot"><strong>1,4%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon amber">⚠</div>
+          <div class="kpi-label">Rutas Formativas · Alertas</div>
+          <div class="kpi-value">77</div>
+          <div class="kpi-foot"><strong>9,1%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon green">✓</div>
+          <div class="kpi-label">AA · Tutorías</div>
+          <div class="kpi-value">628</div>
+          <div class="kpi-foot"><strong>74,5%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon slate">◐</div>
+          <div class="kpi-label">AA · Coaching</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-foot"><strong>1,7%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon red">◆</div>
+          <div class="kpi-label">AA · Workshop</div>
+          <div class="kpi-value">47</div>
+          <div class="kpi-foot"><strong>5,6%</strong> del total mensual</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-icon tealD">∑</div>
+          <div class="kpi-label">AA · Sesiones Matemática</div>
+          <div class="kpi-value">54</div>
+          <div class="kpi-foot"><strong>6,4%</strong> del total mensual</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Distribución general</div><div class="card-sub">Todas las atenciones de septiembre</div></div>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-sep-dist"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por área académica</div><div class="card-sub">628 tutorías realizadas</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>número de estudiantes</strong> que asistieron a las tutorías por cada área académica.</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-sep-tut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por tema</div><div class="card-sub">11 asesorías</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-sep-ases"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Retiros por motivo</div><div class="card-sub">12 retiros</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Datos correspondientes a la <strong>sede Santiago</strong>.</span>
+          </div>
+          <div class="breakdown" id="bd-sep-ret"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por motivo</div><div class="card-sub">77 alertas registradas</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="breakdown" id="bd-sep-ale"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Coaching por tema</div><div class="card-sub">14 sesiones</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-sep-coa"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Workshops por tema</div><div class="card-sub">47 participantes</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-sep-ws"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tutorías por unidad</div><div class="card-sub">Distribución por sede y programa</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="breakdown" id="bd-sep-uni"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Alertas por sede</div><div class="card-sub">Distribución territorial</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-sep-ale-sede"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Asesorías por sede</div><div class="card-sub">11 asesorías de septiembre</div></div>
+            <span class="card-badge slate">Rutas Formativas</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-sep-ases-sede"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones de Estudio de Matemática</div><div class="card-sub">54 asistencias en septiembre</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="card-note">
+            <span class="icon">i</span>
+            <span>Corresponde al <strong>total de asistencias acumuladas</strong> en las sesiones semanales de estudio de Matemática, separadas por sede.</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-sep-mate"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Sesiones Matemática — detalle</div><div class="card-sub">Participación mensual</div></div>
+            <span class="card-badge">Apoyo académico</span>
+          </div>
+          <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+            <div class="kpi" style="border-color:var(--teal-bg);">
+              <div class="kpi-label">Santiago</div>
+              <div class="kpi-value" style="color:var(--teal);">14</div>
+              <div class="kpi-foot"><strong>25,9%</strong> del mes</div>
+            </div>
+            <div class="kpi" style="border-color:var(--violet-bg);">
+              <div class="kpi-label">Viña del Mar</div>
+              <div class="kpi-value" style="color:var(--violet);">40</div>
+              <div class="kpi-foot"><strong>74,1%</strong> del mes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Universidad Adolfo Ibáñez</div>
+      <p class="footer-desc">
+        Dirección de Acompañamiento Estudiantil. Reportería institucional del año 2026.
+        Datos consolidados a partir del registro mensual de atenciones.
+      </p>
+    </div>
+    <div class="footer-col">
+      <h4>Fuente</h4>
+      <p>Reportes 2026<br>Consolidado mensual<br>Enero — Septiembre 2026</p>
+    </div>
+    <div class="footer-col">
+      <h4>Áreas</h4>
+      <p>Rutas Formativas<br>Apoyo Académico<br>Alertas tempranas</p>
+    </div>
+    <div class="footer-col">
+      <h4>Sedes</h4>
+      <p>Peñalolén<br>Viña del Mar<br>Errázuriz · Vitacura</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© Universidad Adolfo Ibáñez · 2026</span>
+    <span>Reporte 2026 · Acompañamiento Estudiantil</span>
+  </div>
+</footer>
+
+<script>
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = '#e2e8f0';
+
+/* Registrar plugin datalabels globalmente */
+Chart.register(ChartDataLabels);
+/* Por defecto, no mostrar datalabels — los activamos por chart */
+Chart.defaults.plugins.datalabels = { display:false };
+
+/* Palette teal-driven */
+const PAL = {
+  teal:'#14909c', tealL:'#4cbcc7', tealD:'#0e6b75', tealXD:'#0a3b44',
+  violet:'#7c3aed', amber:'#ea580c', green:'#16a34a', red:'#dc2626', slate:'#475569',
+  soft:['#14909c','#7c3aed','#ea580c','#16a34a','#dc2626','#475569','#0e6b75']
+};
+
+const DATA = {
+  evolucion:{
+    labels:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre'],
+    series:{
+      'Rutas Formativas · Asesorías':{color:PAL.teal,   data:[43,4,26,22,56,74,48,21,11]},
+      'Rutas Formativas · Retiros'  :{color:PAL.violet, data:[25,18,18,16,6,11,14,4,12]},
+      'Rutas Formativas · Alertas'  :{color:PAL.amber,  data:[0,0,64,126,70,45,0,48,77]},
+      'AA · Tutorías'         :{color:PAL.green,  data:[0,0,215,877,395,449,29,155,628]},
+      'AA · Coaching'         :{color:PAL.slate,  data:[0,0,24,30,26,22,0,19,14]},
+      'AA · Workshop'         :{color:PAL.red,    data:[0,0,214,15,73,5,0,40,47]},
+      'AA · Sesiones Matemática':{color:PAL.tealD, data:[0,0,133,280,182,237,0,21,54]}
+    }
+  },
+  acumulado:{
+    labels:['Rutas Formativas · Asesorías','Rutas Formativas · Retiros','Rutas Formativas · Alertas','AA · Tutorías','AA · Coaching','AA · Workshop','AA · Sesiones Matemática'],
+    data:[305,124,430,2748,135,394,907],
+    colors:[PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD]
+  },
+  enero:{
+    asesorias_tema:[
+      {label:'Toma de ramos',   value:23, pct:53.5},
+      {label:'Avance malla',    value:20, pct:46.5},
+      {label:'Doble titulación',value:0,  pct:0},
+      {label:'Otros temas',     value:0,  pct:0}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional', value:15, pct:60},
+      {label:'Personal',               value:6,  pct:24},
+      {label:'Económico',              value:2,  pct:8},
+      {label:'Familiar',               value:1,  pct:4},
+      {label:'Otro',                   value:1,  pct:4},
+      {label:'Abandono',               value:0,  pct:0}
+    ],
+    sede:{Santiago:28,'Viña del Mar':15},
+    genero:{Femenino:26,Masculino:17}
+  },
+  febrero:{
+    asesorias_tema:[
+      {label:'Avance malla',    value:3, pct:75},
+      {label:'Doble titulación',value:1, pct:25},
+      {label:'Toma de ramos',   value:0, pct:0},
+      {label:'Otros temas',     value:0, pct:0}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional', value:9, pct:50},
+      {label:'Económico',              value:3, pct:16.7},
+      {label:'Abandono',               value:3, pct:16.7},
+      {label:'Personal',               value:2, pct:11.1},
+      {label:'Otro',                   value:1, pct:5.6},
+      {label:'Familiar',               value:0, pct:0}
+    ]
+  },
+  marzo:{
+    distribucion:{
+      labels:['Tutorías','Workshop','Sesiones Matemática','Alertas','Asesorías','Coaching','Retiros'],
+      data:[215,214,133,64,26,24,18],
+      colors:[PAL.green,PAL.red,PAL.tealD,PAL.amber,PAL.teal,PAL.slate,PAL.violet]
+    },
+    sesiones_mate_sede:{Santiago:44,'Viña del Mar':89},
+    tutorias_area:[
+      {label:'Derecho',        value:94},
+      {label:'Negocios',       value:39},
+      {label:'Matemática',     value:36},
+      {label:'Psicología',     value:22},
+      {label:'CEO',            value:13},
+      {label:'Comunicaciones', value:6},
+      {label:'FIC',            value:5}
+    ],
+    asesorias_tema:[
+      {label:'Intercambio',     value:13, pct:50},
+      {label:'Avance malla',    value:7,  pct:26.9},
+      {label:'Otros',           value:3,  pct:11.5},
+      {label:'Minor',           value:2,  pct:7.7},
+      {label:'Doble titulación',value:1,  pct:3.8}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional', value:6, pct:33.3},
+      {label:'Personal',               value:4, pct:22.2},
+      {label:'Salud',                  value:3, pct:16.7},
+      {label:'Económico',              value:2, pct:11.1},
+      {label:'Familiar',               value:2, pct:11.1},
+      {label:'Otro',                   value:1, pct:5.6}
+    ],
+    alertas_motivo:[
+      {label:'Baja asistencia / participación',      value:39, pct:60.9},
+      {label:'Dificultades personales / emocionales',value:10, pct:15.6},
+      {label:'Dificultades académicas',              value:9,  pct:14.1},
+      {label:'Salud / Otro',                         value:6,  pct:9.4}
+    ],
+    coaching_tema:[
+      {label:'Planificación del semestre',   value:13, pct:54.2},
+      {label:'Tips / Técnicas evaluaciones', value:4,  pct:16.7},
+      {label:'Otros (apuntes, otro)',        value:3,  pct:12.5},
+      {label:'Lectura activa',               value:2,  pct:8.3},
+      {label:'Crea tu sesión de estudio',    value:2,  pct:8.3}
+    ],
+    workshop_tema:[
+      {label:'Taller Alfabetización RCD',          value:177, pct:82.7},
+      {label:'Otra Oportunidad (Reincorporados)',  value:37,  pct:17.3}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',     value:140, pct:65.1},
+      {label:'Pregrado Viña del Mar', value:73,  pct:34.0},
+      {label:'GOB · Magíster',        value:2,   pct:0.9}
+    ]
+  },
+  abril:{
+    distribucion:{
+      labels:['Tutorías','Sesiones Matemática','Alertas','Coaching','Asesorías','Retiros','Workshop'],
+      data:[877,280,126,30,22,16,15],
+      colors:[PAL.green,PAL.tealD,PAL.amber,PAL.slate,PAL.teal,PAL.violet,PAL.red]
+    },
+    sesiones_mate_sede:{Santiago:94,'Viña del Mar':186},
+    tutorias_area:[
+      {label:'Negocios',       value:214},
+      {label:'Derecho',        value:202},
+      {label:'Psicología',     value:176},
+      {label:'Matemática',     value:171},
+      {label:'FIC',            value:51},
+      {label:'Comunicaciones', value:45},
+      {label:'CEO',            value:14},
+      {label:'Inglés',         value:4}
+    ],
+    asesorias_tema:[
+      {label:'Intercambio',     value:11, pct:50.0},
+      {label:'Avance malla',    value:9,  pct:40.9},
+      {label:'Doble titulación',value:1,  pct:4.5},
+      {label:'Otros',           value:1,  pct:4.5}
+    ],
+    retiros_motivo:[
+      {label:'Personal',               value:6, pct:37.5},
+      {label:'Académico / Vocacional', value:5, pct:31.3},
+      {label:'Salud',                  value:2, pct:12.5},
+      {label:'Económico',              value:1, pct:6.3},
+      {label:'Familiar',               value:1, pct:6.3},
+      {label:'Otro',                   value:1, pct:6.3}
+    ],
+    alertas_motivo:[
+      {label:'Baja asistencia / participación',      value:79, pct:62.7},
+      {label:'Dificultades académicas',              value:28, pct:22.2},
+      {label:'Dificultades personales / emocionales',value:13, pct:10.3},
+      {label:'Salud / Otro',                         value:6,  pct:4.8}
+    ],
+    coaching_tema:[
+      {label:'Planificación del semestre',   value:15, pct:50.0},
+      {label:'Lectura activa',               value:7,  pct:23.3},
+      {label:'Tips / Técnicas evaluaciones', value:5,  pct:16.7},
+      {label:'Crea tu sesión de estudio',    value:3,  pct:10.0}
+    ],
+    workshop_tema:[
+      {label:'Ciclo de Estrategias TDA',       value:9, pct:60.0},
+      {label:'Taller de Comprensión Lectora',  value:4, pct:26.7},
+      {label:'Micro-Taller de Región',         value:2, pct:13.3}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',                          value:547, pct:62.4},
+      {label:'Pregrado Viña del Mar',                      value:323, pct:36.8},
+      {label:'GOB · Magíster',                             value:2,   pct:0.2},
+      {label:'EN · Master of Science Santiago',            value:2,   pct:0.2},
+      {label:'FIC · Ingeniería y Ciencias Quinto Santiago',value:2,   pct:0.2},
+      {label:'FAL · Artes Liberales',                      value:1,   pct:0.1}
+    ],
+    alertas_sede:{Peñalolén:65,'Viña del Mar':61},
+    asesorias_sede:{Santiago:16,'Viña del Mar':6}
+  },
+  mayo:{
+    distribucion:{
+      labels:['Tutorías','Sesiones Matemática','Workshop','Alertas','Asesorías','Coaching','Retiros'],
+      data:[395,182,73,70,56,26,6],
+      colors:[PAL.green,PAL.tealD,PAL.red,PAL.amber,PAL.teal,PAL.slate,PAL.violet]
+    },
+    sesiones_mate_sede:{Santiago:55,'Viña del Mar':127},
+    tutorias_area:[
+      {label:'Matemáticas',    value:118},
+      {label:'Derecho',        value:83},
+      {label:'Negocios',       value:68},
+      {label:'Psicología',     value:67},
+      {label:'Comunicaciones', value:27},
+      {label:'FIC',            value:11},
+      {label:'CEO',            value:11},
+      {label:'Inglés',         value:10}
+    ],
+    asesorias_tema:[
+      {label:'Avance malla',    value:37, pct:66.1},
+      {label:'Intercambio',     value:11, pct:19.6},
+      {label:'Doble titulación',value:8,  pct:14.3}
+    ],
+    retiros_motivo:[
+      {label:'Salud',                  value:2, pct:33.3},
+      {label:'Personal',               value:2, pct:33.3},
+      {label:'Abandono',               value:1, pct:16.7},
+      {label:'Académico / Vocacional', value:1, pct:16.7}
+    ],
+    alertas_motivo:[
+      {label:'Baja asistencia / participación',      value:32, pct:45.7},
+      {label:'Dificultades personales / emocionales',value:23, pct:32.9},
+      {label:'Dificultades académicas',              value:13, pct:18.6},
+      {label:'Salud / Otro',                         value:2,  pct:2.9}
+    ],
+    coaching_tema:[
+      {label:'Planificación del semestre',          value:12, pct:46.2},
+      {label:'Técnicas atención y concentración',   value:5,  pct:19.2},
+      {label:'Tips / Técnicas evaluaciones',        value:4,  pct:15.4},
+      {label:'Crea tu sesión de estudio',           value:3,  pct:11.5},
+      {label:'Técnicas de memorización',            value:1,  pct:3.8},
+      {label:'Lectura activa',                      value:1,  pct:3.8}
+    ],
+    workshop_tema:[
+      {label:'Gestión del Sí Mismo',           value:60, pct:82.2},
+      {label:'Ciclo de Estrategias TDA',       value:9,  pct:12.3},
+      {label:'Micro-Taller de Región',         value:4,  pct:5.5}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',               value:232, pct:58.7},
+      {label:'Pregrado Viña del Mar',           value:159, pct:40.3},
+      {label:'GOB · Magíster',                  value:2,   pct:0.5},
+      {label:'EN · Master of Science Santiago', value:1,   pct:0.3},
+      {label:'FAL · Artes Liberales',           value:1,   pct:0.3}
+    ],
+    alertas_sede:{Peñalolén:41,'Viña del Mar':29},
+    asesorias_sede:{Santiago:44,'Viña del Mar':12}
+  },
+  junio:{
+    distribucion:{
+      labels:['Tutorías','Sesiones Matemática','Asesorías','Alertas','Coaching','Retiros','Workshop'],
+      data:[449,237,74,45,22,11,5],
+      colors:[PAL.green,PAL.tealD,PAL.teal,PAL.amber,PAL.slate,PAL.violet,PAL.red]
+    },
+    sesiones_mate_sede:{Santiago:68,'Viña del Mar':169},
+    tutorias_area:[
+      {label:'Derecho',        value:93},
+      {label:'Matemáticas',    value:93},
+      {label:'Negocios',       value:83},
+      {label:'FIC',            value:67},
+      {label:'Psicología',     value:56},
+      {label:'Comunicaciones', value:33},
+      {label:'Inglés',         value:17},
+      {label:'CEO',            value:7}
+    ],
+    asesorias_tema:[
+      {label:'Avance malla',      value:33, pct:44.6},
+      {label:'Intercambio',       value:26, pct:35.1},
+      {label:'Doble titulación',  value:5,  pct:6.8},
+      {label:'Cambio de carrera', value:5,  pct:6.8},
+      {label:'Anulación semestre',value:2,  pct:2.7},
+      {label:'Minor',             value:2,  pct:2.7},
+      {label:'Retiro',            value:1,  pct:1.4}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional', value:7, pct:63.6},
+      {label:'Personal',               value:3, pct:27.3},
+      {label:'Económico',              value:1, pct:9.1}
+    ],
+    alertas_motivo:[
+      {label:'Baja asistencia / participación',      value:27, pct:60.0},
+      {label:'Dificultades académicas',              value:10, pct:22.2},
+      {label:'Dificultades personales / emocionales',value:8,  pct:17.8}
+    ],
+    coaching_tema:[
+      {label:'Planificación del semestre',        value:8, pct:36.4},
+      {label:'Crea tu sesión de estudio',         value:5, pct:22.7},
+      {label:'Técnicas atención y concentración', value:4, pct:18.2},
+      {label:'Toma de apuntes',                   value:2, pct:9.1},
+      {label:'Técnicas de memorización',          value:1, pct:4.5},
+      {label:'Participación en clases',           value:1, pct:4.5},
+      {label:'Tips / Técnicas evaluaciones',      value:1, pct:4.5}
+    ],
+    workshop_tema:[
+      {label:'Ciclo de Estrategias TDA', value:5, pct:100.0}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',           value:325, pct:72.4},
+      {label:'Pregrado Viña del Mar',       value:117, pct:26.1},
+      {label:'Segundo Ciclo Santiago',      value:6,   pct:1.3},
+      {label:'FIC · Magíster Académicos',   value:1,   pct:0.2}
+    ],
+    alertas_sede:{Peñalolén:30,'Viña del Mar':15},
+    asesorias_sede:{Santiago:61,'Viña del Mar':13}
+  },
+  julio:{
+    distribucion:{
+      labels:['Asesorías','Tutorías','Retiros'],
+      data:[48,29,14],
+      colors:[PAL.teal,PAL.green,PAL.violet]
+    },
+    tutorias_area:[
+      {label:'Derecho',     value:19},
+      {label:'Matemáticas', value:5},
+      {label:'Negocios',    value:5}
+    ],
+    asesorias_tema:[
+      {label:'Avance de malla',   value:23, pct:47.9},
+      {label:'Intercambio',       value:11, pct:22.9},
+      {label:'Toma de ramos',     value:11, pct:22.9},
+      {label:'Reincorporación',   value:1,  pct:2.1},
+      {label:'Minor',             value:1,  pct:2.1},
+      {label:'Doble titulación',  value:1,  pct:2.1}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional', value:6, pct:42.9},
+      {label:'Personal',               value:5, pct:35.7},
+      {label:'Salud',                  value:1, pct:7.1},
+      {label:'Viaje',                  value:1, pct:7.1},
+      {label:'Otro',                   value:1, pct:7.1}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',     value:15, pct:51.7},
+      {label:'Pregrado Viña del Mar', value:14, pct:48.3}
+    ],
+    asesorias_sede:{Santiago:41,'Viña del Mar':7}
+  },
+  agosto:{
+    distribucion:{
+      labels:['Tutorías','Alertas','Workshop','Asesorías','Sesiones Matemática','Coaching','Retiros'],
+      data:[155,48,40,21,21,19,4],
+      colors:[PAL.green,PAL.amber,PAL.red,PAL.teal,PAL.tealD,PAL.slate,PAL.violet]
+    },
+    sesiones_mate_sede:{Santiago:7,'Viña del Mar':14},
+    tutorias_area:[
+      {label:'Negocios',       value:103},
+      {label:'Psicología',     value:18},
+      {label:'Comunicaciones', value:13},
+      {label:'Derecho',        value:13},
+      {label:'FIC',            value:6},
+      {label:'CEO',            value:2}
+    ],
+    asesorias_tema:[
+      {label:'Avance de malla',        value:12, pct:57.1},
+      {label:'Intercambio',            value:6,  pct:28.6},
+      {label:'Minor',                  value:1,  pct:4.8},
+      {label:'Elección Magíster',      value:1,  pct:4.8},
+      {label:'Continuidad de Estudios',value:1,  pct:4.8}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional',   value:1, pct:25.0},
+      {label:'Económico',                value:1, pct:25.0},
+      {label:'Personal',                 value:1, pct:25.0},
+      {label:'Laboral / Emprendimiento', value:1, pct:25.0}
+    ],
+    alertas_motivo:[
+      {label:'Baja asistencia / participación',      value:38, pct:79.2},
+      {label:'Dificultades personales / emocionales',value:5,  pct:10.4},
+      {label:'Dificultades académicas',              value:4,  pct:8.3},
+      {label:'Otro',                                 value:1,  pct:2.1}
+    ],
+    coaching_tema:[
+      {label:'Planificación del semestre',        value:7, pct:36.8},
+      {label:'Crea tu sesión de estudio',         value:4, pct:21.1},
+      {label:'Técnicas atención y concentración', value:3, pct:15.8},
+      {label:'Tips / Técnicas evaluaciones',      value:2, pct:10.5},
+      {label:'Toma de apuntes',                   value:2, pct:10.5},
+      {label:'Participación en clases',           value:1, pct:5.3}
+    ],
+    workshop_tema:[
+      {label:'Otra Oportunidad, Otro Resultado', value:39, pct:97.5},
+      {label:'Ciclo de Estrategias TDA',         value:1,  pct:2.5}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',     value:114, pct:73.5},
+      {label:'Pregrado Viña del Mar', value:39,  pct:25.2},
+      {label:'Peñalolén',             value:2,   pct:1.3}
+    ],
+    alertas_sede:{'Viña del Mar':29,Peñalolén:19},
+    asesorias_sede:{Santiago:20,'Viña del Mar':1}
+  },
+  septiembre:{
+    distribucion:{
+      labels:['Tutorías','Alertas','Sesiones Matemática','Workshop','Coaching','Retiros','Asesorías'],
+      data:[628,77,54,47,14,12,11],
+      colors:[PAL.green,PAL.amber,PAL.tealD,PAL.red,PAL.slate,PAL.violet,PAL.teal]
+    },
+    sesiones_mate_sede:{Santiago:14,'Viña del Mar':40},
+    tutorias_area:[
+      {label:'Comunicaciones', value:167},
+      {label:'Negocios',       value:133},
+      {label:'Psicología',     value:111},
+      {label:'Matemáticas',    value:74},
+      {label:'FIC',            value:67},
+      {label:'Derecho',        value:64},
+      {label:'Inglés',         value:11},
+      {label:'CEO',            value:1}
+    ],
+    asesorias_tema:[
+      {label:'Avance de malla',    value:5, pct:45.5},
+      {label:'Intercambio',        value:4, pct:36.4},
+      {label:'Elección Magíster',  value:1, pct:9.1},
+      {label:'Magíster',           value:1, pct:9.1}
+    ],
+    retiros_motivo:[
+      {label:'Académico / Vocacional',   value:6, pct:50.0},
+      {label:'Económico',                value:2, pct:16.7},
+      {label:'Familiar',                 value:1, pct:8.3},
+      {label:'Personal',                 value:1, pct:8.3},
+      {label:'Laboral / Emprendimiento', value:1, pct:8.3},
+      {label:'Abandono',                 value:1, pct:8.3}
+    ],
+    alertas_motivo:[
+      {label:'Baja asistencia / participación',       value:62, pct:80.5},
+      {label:'Dificultades personales / emocionales', value:10, pct:13.0},
+      {label:'Dificultades académicas',               value:4,  pct:5.2},
+      {label:'Derivación CRICE',                      value:1,  pct:1.3}
+    ],
+    coaching_tema:[
+      {label:'Técnicas atención y concentración', value:4, pct:28.6},
+      {label:'Planificación del semestre',        value:4, pct:28.6},
+      {label:'Crea tu sesión de estudio',         value:3, pct:21.4},
+      {label:'Tips / Técnicas evaluaciones',      value:1, pct:7.1},
+      {label:'Técnicas de memorización',          value:1, pct:7.1},
+      {label:'Otro',                              value:1, pct:7.1}
+    ],
+    workshop_tema:[
+      {label:'Taller Autorregulación Académica', value:46, pct:97.9},
+      {label:'Estrategias TDA',                  value:1,  pct:2.1}
+    ],
+    unidades:[
+      {label:'Pregrado Santiago',           value:432, pct:68.8},
+      {label:'Pregrado Viña del Mar',       value:195, pct:31.1},
+      {label:'RRII — Incoming Viña del Mar',value:1,   pct:0.2}
+    ],
+    alertas_sede:{Peñalolén:46,'Viña del Mar':31},
+    asesorias_sede:{Santiago:8,'Viña del Mar':3}
+  }
+};
+
+/* Animate total */
+function animateNumber(el,to,duration=1600){
+  const start = performance.now();
+  (function step(now){
+    const p = Math.min((now-start)/duration,1);
+    const eased = 1 - Math.pow(1-p,3);
+    el.textContent = Math.floor(eased*to).toLocaleString('es-CL');
+    if(p<1) requestAnimationFrame(step);
+  })(performance.now());
+}
+animateNumber(document.getElementById('grandTotal'),5043);
+
+/* Tabs */
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+t.dataset.month).classList.add('active');
+  const offset = document.querySelector('.tabs-wrap').offsetTop - 60;
+  window.scrollTo({top:offset,behavior:'smooth'});
+}));
+
+/* Breakdown renderer — teal accent for leader, soft gray for others */
+function renderBreakdown(id, items, total){
+  const c = document.getElementById(id);
+  if(!c) return;
+  c.innerHTML='';
+  const maxVal = Math.max(...items.map(i=>i.value),1);
+  const colors = [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD];
+  items.forEach((it,idx)=>{
+    const pct = it.pct ?? (it.value/total*100);
+    const widthPct = (it.value/maxVal*100);
+    const color = colors[idx % colors.length];
+    const row = document.createElement('div');
+    row.className = 'bd-item';
+    row.innerHTML = `
+      <div class="bd-row">
+        <div class="bd-label">${it.label}</div>
+        <div class="bd-num">${it.value}<span class="pct">${pct.toFixed(1)}%</span></div>
+      </div>
+      <div class="bd-track">
+        <div class="bd-fill" style="width:${widthPct}%;background:${color};animation-delay:${idx*70}ms"></div>
+      </div>
+    `;
+    c.appendChild(row);
+  });
+}
+renderBreakdown('bd-enero-ases', DATA.enero.asesorias_tema, 43);
+renderBreakdown('bd-enero-ret',  DATA.enero.retiros_motivo, 25);
+renderBreakdown('bd-feb-ases',   DATA.febrero.asesorias_tema, 4);
+renderBreakdown('bd-feb-ret',    DATA.febrero.retiros_motivo, 18);
+renderBreakdown('bd-mar-ases',   DATA.marzo.asesorias_tema, 26);
+renderBreakdown('bd-mar-ret',    DATA.marzo.retiros_motivo, 18);
+renderBreakdown('bd-mar-ale',    DATA.marzo.alertas_motivo, 64);
+renderBreakdown('bd-mar-coa',    DATA.marzo.coaching_tema, 24);
+renderBreakdown('bd-mar-ws',     DATA.marzo.workshop_tema, 214);
+renderBreakdown('bd-mar-uni',    DATA.marzo.unidades, 215);
+renderBreakdown('bd-abr-ases',   DATA.abril.asesorias_tema, 22);
+renderBreakdown('bd-abr-ret',    DATA.abril.retiros_motivo, 16);
+renderBreakdown('bd-abr-ale',    DATA.abril.alertas_motivo, 126);
+renderBreakdown('bd-abr-coa',    DATA.abril.coaching_tema, 30);
+renderBreakdown('bd-abr-ws',     DATA.abril.workshop_tema, 15);
+renderBreakdown('bd-abr-uni',    DATA.abril.unidades, 877);
+renderBreakdown('bd-may-ases',   DATA.mayo.asesorias_tema, 56);
+renderBreakdown('bd-may-ret',    DATA.mayo.retiros_motivo, 6);
+renderBreakdown('bd-may-ale',    DATA.mayo.alertas_motivo, 70);
+renderBreakdown('bd-may-coa',    DATA.mayo.coaching_tema, 26);
+renderBreakdown('bd-may-ws',     DATA.mayo.workshop_tema, 73);
+renderBreakdown('bd-may-uni',    DATA.mayo.unidades, 395);
+renderBreakdown('bd-jun-ases',   DATA.junio.asesorias_tema, 74);
+renderBreakdown('bd-jun-ret',    DATA.junio.retiros_motivo, 11);
+renderBreakdown('bd-jun-ale',    DATA.junio.alertas_motivo, 45);
+renderBreakdown('bd-jun-coa',    DATA.junio.coaching_tema, 22);
+renderBreakdown('bd-jun-ws',     DATA.junio.workshop_tema, 5);
+renderBreakdown('bd-jun-uni',    DATA.junio.unidades, 449);
+renderBreakdown('bd-jul-ases',   DATA.julio.asesorias_tema, 48);
+renderBreakdown('bd-jul-ret',    DATA.julio.retiros_motivo, 14);
+renderBreakdown('bd-jul-uni',    DATA.julio.unidades, 29);
+renderBreakdown('bd-ago-ases',   DATA.agosto.asesorias_tema, 21);
+renderBreakdown('bd-ago-ret',    DATA.agosto.retiros_motivo, 4);
+renderBreakdown('bd-ago-ale',    DATA.agosto.alertas_motivo, 48);
+renderBreakdown('bd-ago-coa',    DATA.agosto.coaching_tema, 19);
+renderBreakdown('bd-ago-ws',     DATA.agosto.workshop_tema, 40);
+renderBreakdown('bd-ago-uni',    DATA.agosto.unidades, 155);
+renderBreakdown('bd-sep-ases',   DATA.septiembre.asesorias_tema, 11);
+renderBreakdown('bd-sep-ret',    DATA.septiembre.retiros_motivo, 12);
+renderBreakdown('bd-sep-ale',    DATA.septiembre.alertas_motivo, 77);
+renderBreakdown('bd-sep-coa',    DATA.septiembre.coaching_tema, 14);
+renderBreakdown('bd-sep-ws',     DATA.septiembre.workshop_tema, 47);
+renderBreakdown('bd-sep-uni',    DATA.septiembre.unidades, 628);
+
+/* Chart options */
+/* Helper: formato chileno de porcentaje */
+const fmtPct = v => v.toFixed(1).replace('.',',') + '%';
+
+/* Datalabels para gráficos tipo doughnut/pie: muestra "valor (xx,x%)" */
+const dlDoughnut = {
+  display:(ctx)=>{
+    const v = ctx.dataset.data[ctx.dataIndex];
+    const total = ctx.dataset.data.reduce((a,b)=>a+(typeof b==='number'?b:0),0);
+    return total>0 && (v/total) >= 0.04;
+  },
+  color:'#fff',
+  font:(ctx)=>{
+    const v = ctx.dataset.data[ctx.dataIndex];
+    const total = ctx.dataset.data.reduce((a,b)=>a+(typeof b==='number'?b:0),0);
+    const share = total>0 ? v/total : 0;
+    /* Slices grandes: tipografía más prominente */
+    return {
+      family:"'Inter', sans-serif",
+      weight:'600',
+      size: share >= 0.15 ? 13 : 11,
+      lineHeight:1.25
+    };
+  },
+  textAlign:'center',
+  formatter:(value, ctx)=>{
+    const total = ctx.dataset.data.reduce((a,b)=>a+(typeof b==='number'?b:0),0);
+    const pct = total>0 ? (value/total*100) : 0;
+    return value.toLocaleString('es-CL') + '\n' + fmtPct(pct);
+  },
+  /* Sombra sutil para legibilidad sin contorno duro */
+  textShadowColor:'rgba(0,0,0,0.35)',
+  textShadowBlur:4
+};
+
+/* Datalabels para gráficos de barras horizontales: muestra "valor · xx,x%" al final de la barra */
+const dlBarH = {
+  display:true,
+  anchor:'end',
+  align:'end',
+  offset:8,
+  clamp:true,
+  color:'#0f172a',
+  font:{family:"'Inter', sans-serif", weight:'600', size:11},
+  formatter:(value, ctx)=>{
+    const total = ctx.dataset.data.reduce((a,b)=>a+(typeof b==='number'?b:0),0);
+    const pct = total>0 ? (value/total*100) : 0;
+    return value.toLocaleString('es-CL') + ' · ' + fmtPct(pct);
+  }
+};
+
+/* Datalabels para barras verticales / línea: muestra valor + % sobre el total del dataset */
+const dlBarV = {
+  display:true,
+  anchor:'end',
+  align:'top',
+  offset:4,
+  color:'#1e293b',
+  font:{family:"'Inter', sans-serif", weight:'600', size:11},
+  formatter:(value, ctx)=>{
+    const total = ctx.dataset.data.reduce((a,b)=>a+(typeof b==='number'?b:0),0);
+    const pct = total>0 ? (value/total*100) : 0;
+    return value.toLocaleString('es-CL') + '\n' + fmtPct(pct);
+  },
+  textAlign:'center'
+};
+
+const legendOpts = {
+  position:'bottom',
+  labels:{
+    boxWidth:8, boxHeight:8, padding:14,
+    font:{family:"'Inter', sans-serif", size:12, weight:'500'},
+    color:'#334155', usePointStyle:true, pointStyle:'circle'
+  }
+};
+const tooltipOpts = {
+  backgroundColor:'#0f172a',
+  titleFont:{family:"'Inter', sans-serif", size:13, weight:'600'},
+  bodyFont:{family:"'Inter', sans-serif", size:12, weight:'400'},
+  padding:14, cornerRadius:8, displayColors:true,
+  titleColor:'#fff', bodyColor:'#cbd5e1',
+  callbacks:{
+    label:function(ctx){
+      /* ctx.raw es el valor original del dataset, sin importar orientación */
+      const value = Number(ctx.raw) || 0;
+      const data = ctx.dataset.data;
+      const total = data.reduce((a,b)=>a+(Number(b)||0),0);
+      const pct = total>0 ? (value/total*100) : 0;
+      const label = ctx.dataset.label || ctx.label || '';
+      return ` ${label ? label+': ' : ''}${value.toLocaleString('es-CL')} (${fmtPct(pct)})`;
+    }
+  }
+};
+const axisOpts = {
+  x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'}},
+  y:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true}
+};
+
+/* En el gráfico de líneas no mostramos datalabels permanentes para mantenerlo limpio.
+   El tooltip al pasar el mouse ya muestra valor + % del mes (ver tooltipLine). */
+const dlLine = { display:false };
+/* Tooltip especial para evolución: muestra todas las series del mes con % */
+const tooltipLine = {
+  ...tooltipOpts,
+  mode:'index',
+  intersect:false,
+  callbacks:{
+    title:function(items){
+      if(!items.length) return '';
+      const idx = items[0].dataIndex;
+      const total = items[0].chart.data.datasets.reduce((a,ds)=>a+(Number(ds.data[idx])||0),0);
+      return `${items[0].label} — ${total.toLocaleString('es-CL')} atenciones`;
+    },
+    label:function(ctx){
+      const value = Number(ctx.raw) || 0;
+      const idx = ctx.dataIndex;
+      const total = ctx.chart.data.datasets.reduce((a,ds)=>a+(Number(ds.data[idx])||0),0);
+      const pct = total>0 ? (value/total*100) : 0;
+      return ` ${ctx.dataset.label}: ${value.toLocaleString('es-CL')} (${fmtPct(pct)})`;
+    }
+  }
+};
+
+new Chart(document.getElementById('chart-evol'),{
+  type:'line',
+  data:{
+    labels:DATA.evolucion.labels,
+    datasets:Object.entries(DATA.evolucion.series).map(([name,s])=>({
+      label:name, data:s.data,
+      borderColor:s.color, backgroundColor:s.color+'22',
+      tension:0.35, borderWidth:2.5,
+      pointRadius:4, pointHoverRadius:8,
+      pointBackgroundColor:s.color, pointBorderColor:'#fff', pointBorderWidth:2,
+      fill:false
+    }))
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index', intersect:false},
+    layout:{padding:{top:12,right:12}},
+    plugins:{legend:legendOpts,tooltip:tooltipLine,datalabels:dlLine},
+    scales:axisOpts
+  }
+});
+
+new Chart(document.getElementById('chart-acum'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.acumulado.labels,
+    datasets:[{data:DATA.acumulado.data,backgroundColor:DATA.acumulado.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-ene-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.enero.sede),
+    datasets:[{
+      label:'Atenciones',
+      data:Object.values(DATA.enero.sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-ene-gen'),{
+  type:'doughnut',
+  data:{
+    labels:Object.keys(DATA.enero.genero),
+    datasets:[{data:Object.values(DATA.enero.genero),backgroundColor:[PAL.teal,PAL.tealD],borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-mar-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.marzo.distribucion.labels,
+    datasets:[{data:DATA.marzo.distribucion.data,backgroundColor:DATA.marzo.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-mar-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.marzo.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.marzo.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD][i%7];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== ABRIL CHARTS ========== */
+new Chart(document.getElementById('chart-abr-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.abril.distribucion.labels,
+    datasets:[{data:DATA.abril.distribucion.data,backgroundColor:DATA.abril.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-abr-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.abril.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.abril.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD,PAL.tealL][i%8];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:120}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-abr-ale-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.abril.alertas_sede),
+    datasets:[{
+      label:'Alertas',
+      data:Object.values(DATA.abril.alertas_sede),
+      backgroundColor:[PAL.amber,PAL.tealD],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-abr-ases-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.abril.asesorias_sede),
+    datasets:[{
+      label:'Asesorías',
+      data:Object.values(DATA.abril.asesorias_sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== SESIONES DE MATEMÁTICA ========== */
+new Chart(document.getElementById('chart-mar-mate'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.marzo.sesiones_mate_sede),
+    datasets:[{
+      label:'Asistencias',
+      data:Object.values(DATA.marzo.sesiones_mate_sede),
+      backgroundColor:[PAL.teal, PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-abr-mate'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.abril.sesiones_mate_sede),
+    datasets:[{
+      label:'Asistencias',
+      data:Object.values(DATA.abril.sesiones_mate_sede),
+      backgroundColor:[PAL.teal, PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== MAYO CHARTS ========== */
+new Chart(document.getElementById('chart-may-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.mayo.distribucion.labels,
+    datasets:[{data:DATA.mayo.distribucion.data,backgroundColor:DATA.mayo.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-may-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.mayo.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.mayo.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD,PAL.tealL][i%8];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:120}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-may-ale-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.mayo.alertas_sede),
+    datasets:[{
+      label:'Alertas',
+      data:Object.values(DATA.mayo.alertas_sede),
+      backgroundColor:[PAL.amber,PAL.tealD],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-may-ases-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.mayo.asesorias_sede),
+    datasets:[{
+      label:'Asesorías',
+      data:Object.values(DATA.mayo.asesorias_sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-may-mate'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.mayo.sesiones_mate_sede),
+    datasets:[{
+      label:'Asistencias',
+      data:Object.values(DATA.mayo.sesiones_mate_sede),
+      backgroundColor:[PAL.teal, PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== JUNIO CHARTS ========== */
+new Chart(document.getElementById('chart-jun-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.junio.distribucion.labels,
+    datasets:[{data:DATA.junio.distribucion.data,backgroundColor:DATA.junio.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-jun-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.junio.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.junio.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD,PAL.tealL][i%8];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:120}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-jun-ale-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.junio.alertas_sede),
+    datasets:[{
+      label:'Alertas',
+      data:Object.values(DATA.junio.alertas_sede),
+      backgroundColor:[PAL.amber,PAL.tealD],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-jun-ases-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.junio.asesorias_sede),
+    datasets:[{
+      label:'Asesorías',
+      data:Object.values(DATA.junio.asesorias_sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-jun-mate'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.junio.sesiones_mate_sede),
+    datasets:[{
+      label:'Asistencias',
+      data:Object.values(DATA.junio.sesiones_mate_sede),
+      backgroundColor:[PAL.teal, PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== JULIO CHARTS ========== */
+new Chart(document.getElementById('chart-jul-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.julio.distribucion.labels,
+    datasets:[{data:DATA.julio.distribucion.data,backgroundColor:DATA.julio.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-jul-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.julio.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.julio.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD,PAL.tealL][i%8];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:120}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-jul-ases-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.julio.asesorias_sede),
+    datasets:[{
+      label:'Asesorías',
+      data:Object.values(DATA.julio.asesorias_sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== AGOSTO CHARTS ========== */
+new Chart(document.getElementById('chart-ago-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.agosto.distribucion.labels,
+    datasets:[{data:DATA.agosto.distribucion.data,backgroundColor:DATA.agosto.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-ago-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.agosto.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.agosto.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD,PAL.tealL][i%8];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:120}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-ago-ale-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.agosto.alertas_sede),
+    datasets:[{
+      label:'Alertas',
+      data:Object.values(DATA.agosto.alertas_sede),
+      backgroundColor:[PAL.amber,PAL.tealD],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-ago-ases-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.agosto.asesorias_sede),
+    datasets:[{
+      label:'Asesorías',
+      data:Object.values(DATA.agosto.asesorias_sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-ago-mate'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.agosto.sesiones_mate_sede),
+    datasets:[{
+      label:'Asistencias',
+      data:Object.values(DATA.agosto.sesiones_mate_sede),
+      backgroundColor:[PAL.teal, PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+/* ========== SEPTIEMBRE CHARTS ========== */
+new Chart(document.getElementById('chart-sep-dist'),{
+  type:'doughnut',
+  data:{
+    labels:DATA.septiembre.distribucion.labels,
+    datasets:[{data:DATA.septiembre.distribucion.data,backgroundColor:DATA.septiembre.distribucion.colors,borderColor:'#fff',borderWidth:3,hoverOffset:10}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:legendOpts,tooltip:tooltipOpts,datalabels:dlDoughnut}}
+});
+
+new Chart(document.getElementById('chart-sep-tut'),{
+  type:'bar',
+  data:{
+    labels:DATA.septiembre.tutorias_area.map(i=>i.label),
+    datasets:[{
+      label:'Tutorías',
+      data:DATA.septiembre.tutorias_area.map(i=>i.value),
+      backgroundColor:(ctx)=>{
+        const i=ctx.dataIndex;
+        return [PAL.teal,PAL.violet,PAL.amber,PAL.green,PAL.slate,PAL.red,PAL.tealD,PAL.tealL][i%8];
+      },
+      borderWidth:0, borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:120}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-sep-ale-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.septiembre.alertas_sede),
+    datasets:[{
+      label:'Alertas',
+      data:Object.values(DATA.septiembre.alertas_sede),
+      backgroundColor:[PAL.amber,PAL.tealD],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-sep-ases-sede'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.septiembre.asesorias_sede),
+    datasets:[{
+      label:'Asesorías',
+      data:Object.values(DATA.septiembre.asesorias_sede),
+      backgroundColor:[PAL.teal,PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:90}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chart-sep-mate'),{
+  type:'bar',
+  data:{
+    labels:Object.keys(DATA.septiembre.sesiones_mate_sede),
+    datasets:[{
+      label:'Asistencias',
+      data:Object.values(DATA.septiembre.sesiones_mate_sede),
+      backgroundColor:[PAL.teal, PAL.violet],
+      borderWidth:0, borderRadius:6, barThickness:50
+    }]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},tooltip:tooltipOpts,datalabels:dlBarH},
+    scales:{
+      x:{grid:{color:'#e2e8f0',drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:11},color:'#64748b'},beginAtZero:true},
+      y:{grid:{display:false,drawBorder:false},ticks:{font:{family:"'Inter', sans-serif",size:13,weight:'500'},color:'#1e293b'}}
+    }
+  }
+});
+</script>
+</body>
+</html>
